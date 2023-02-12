@@ -37,7 +37,32 @@
 // if you want to translate, please ask before translating.
 
 export function dirReduc(arr: string[]): string[] {
+    let directions = ["NORTH", "SOUTH", "EAST", "WEST"];
+    let lastDirection = [""]
+
+    function arrayRemove( index:number) {
+        return delete arr[index];
+    }
+    for (let i = 0; i < arr.length; i++) {
+        if (lastDirection[0] == "NORTH" && arr[i] == "SOUTH") {
+            arrayRemove(i)
+            arrayRemove(i-1)
+        } else if(lastDirection[0] == "SOUTH" && arr[i] == "NORTH"){
+            arrayRemove(i)
+            arrayRemove(i-1)
+        } else if(lastDirection[0] == "EAST" && arr[i] == "WEST"){
+            arrayRemove(i)
+            arrayRemove(i-1)
+        } else if(lastDirection[0] == "WEST" && arr[i] == "EAST"){
+            arrayRemove(i)
+            arrayRemove(i-1)
+        }
+        lastDirection[0] = arr[i];
+    }
+
+    //"SOUTH","NORTH","WEST"
+    return arr;
 }
 
 console.log(dirReduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"]))//, ["WEST"]);
-console.log(dirReduc(["NORTH","SOUTH","SOUTH","EAST","WEST","NORTH"]))//, []);
+// console.log(dirReduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH"]))//, []);
