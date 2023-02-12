@@ -1,68 +1,59 @@
-// Once upon a time, on a way through the old wild mountainous west,…
-// … a man was given directions to go from one point to another. The directions were "NORTH", "SOUTH", "WEST", "EAST". Clearly "NORTH" and "SOUTH" are opposite, "WEST" and "EAST" too.
-
-// Going to one direction and coming back the opposite direction right away is a needless effort. Since this is the wild west, with dreadful weather and not much water, it's important to save yourself some energy, otherwise you might die of thirst!
-
-// How I crossed a mountainous desert the smart way.
-// The directions given to the man are, for example, the following (depending on the language):
-
-// ["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"].
-// or
-// { "NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST" };
-// or
-// [North, South, South, East, West, North, West]
-// You can immediately see that going "NORTH" and immediately "SOUTH" is not reasonable, better stay to the same place! So the task is to give to the man a simplified version of the plan. A better plan in this case is simply:
-
-// ["WEST"]
-// or
-// { "WEST" }
-// or
-// [West]
-// Other examples:
-// In ["NORTH", "SOUTH", "EAST", "WEST"], the direction "NORTH" + "SOUTH" is going north and coming back right away.
-
-// The path becomes ["EAST", "WEST"], now "EAST" and "WEST" annihilate each other, therefore, the final result is [] (nil in Clojure).
-
-// In ["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"], "NORTH" and "SOUTH" are not directly opposite but they become directly opposite after the reduction of "EAST" and "WEST" so the whole path is reducible to ["WEST", "WEST"].
-
-// Task
-// Write a function dirReduc which will take an array of strings and returns an array of strings with the needless directions removed (W<->E or S<->N side by side).
-
-// The Haskell version takes a list of directions with data Direction = North | East | West | South.
-// The Clojure version returns nil when the path is reduced to nothing.
-// The Rust version takes a slice of enum Direction {North, East, West, South}.
-// See more examples in "Sample Tests:"
-// Notes
-// Not all paths can be made simpler. The path ["NORTH", "WEST", "SOUTH", "EAST"] is not reducible. "NORTH" and "WEST", "WEST" and "SOUTH", "SOUTH" and "EAST" are not directly opposite of each other and can't become such. Hence the result path is itself : ["NORTH", "WEST", "SOUTH", "EAST"].
-// if you want to translate, please ask before translating.
-
 export function dirReduc(arr: string[]): string[] {
-    let directions = ["NORTH", "SOUTH", "EAST", "WEST"];
-    let lastDirection = [""]
 
-    function arrayRemove( index:number) {
-        return delete arr[index];
+    function arrayRemove(array: string[], index: number) {
+        
+        return array.splice(index, 1)
     }
-    for (let i = 0; i < arr.length; i++) {
-        if (lastDirection[0] == "NORTH" && arr[i] == "SOUTH") {
-            arrayRemove(i)
-            arrayRemove(i-1)
-        } else if(lastDirection[0] == "SOUTH" && arr[i] == "NORTH"){
-            arrayRemove(i)
-            arrayRemove(i-1)
-        } else if(lastDirection[0] == "EAST" && arr[i] == "WEST"){
-            arrayRemove(i)
-            arrayRemove(i-1)
-        } else if(lastDirection[0] == "WEST" && arr[i] == "EAST"){
-            arrayRemove(i)
-            arrayRemove(i-1)
+
+    let removeConsecutiveMoves = (array: string[], lastDirection: string): string[] | void => {
+        
+        for (let i = 0; i < array.length; i++) {
+            if (lastDirection == "NORTH" && arr[i] == "SOUTH") {
+                
+                arrayRemove(array, i)
+                arrayRemove(array, i - 1)
+                // console.log(array)
+                return array
+            } else if (lastDirection == "SOUTH" && arr[i] == "NORTH") {
+                arrayRemove(array, i)
+                arrayRemove(array, i - 1)
+                // console.log(array)
+                return array
+            } else if (lastDirection == "EAST" && arr[i] == "WEST") {
+                arrayRemove(array, i)
+                arrayRemove(array, i - 1)
+                // console.log(array)
+                return array
+            } else if (lastDirection == "WEST" && arr[i] == "EAST") {
+                arrayRemove(array, i)
+                arrayRemove(array, i - 1)
+                // console.log(array)
+                return array
+            }
+            lastDirection = array[i]
         }
-        lastDirection[0] = arr[i];
+
+
     }
 
-    //"SOUTH","NORTH","WEST"
+
+
+    const contariesConsecutiveWordsExists = (arr: string[]) => {
+        let lastDirection = arr[0]
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] == "SOUTH" && lastDirection == "NORTH" || arr[i] == "NORTH" && lastDirection == "SOUTH" || arr[i] == "EAST" && lastDirection == "WEST" || arr[i] == "WEST" && lastDirection == "EAST") {
+                return true
+            }
+            lastDirection = arr[i]
+        }
+        return false
+    }
+
+    while (contariesConsecutiveWordsExists(arr)) {
+        removeConsecutiveMoves(arr, arr[0])
+    }
+
     return arr;
 }
-
 console.log(dirReduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"]))//, ["WEST"]);
-// console.log(dirReduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH"]))//, []);
+console.log(dirReduc(["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH"]))//, []);
