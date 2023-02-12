@@ -1,5 +1,5 @@
 
-# Directions Reduction
+# Directions_Reduction
 
 Once upon a time, on a way through the old wild mountainous west, a man was given directions to go from one point to another. The directions were "NORTH", "SOUTH", "WEST", "EAST". Clearly "NORTH" and "SOUTH" are opposite, "WEST" and "EAST" too.
 
